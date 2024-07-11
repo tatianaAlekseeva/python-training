@@ -11,7 +11,7 @@ class ContactHelper:
         wd = self.app.wd
         # init contact creation
         wd.find_element("link text", "add new").click()
-        # fill group form
+        # fill contact form
         wd.find_element("name", "firstname").click()
         wd.find_element("name", "firstname").clear()
         wd.find_element("name", "firstname").send_keys(contact.firstname)
@@ -24,3 +24,31 @@ class ContactHelper:
         # submit contact creation
         wd.find_element("name", "submit").click()
         self.return_to_contacts_page()
+
+    def delete_first_contact(self):
+        wd = self.app.wd
+        # select first contact
+        wd.find_element("name", "selected[]").click()
+        # submit deletion
+        wd.find_element("xpath", "//input[@value='Delete']").click()
+        wd.find_element("id", "maintable")
+
+    def edit_first(self, contact):
+        wd = self.app.wd
+        # select first contact
+        wd.find_element("name", "selected[]").click()
+        wd.find_element("xpath", "//img[@alt='Edit']").click()
+        # edit contact form
+        wd.find_element("name", "firstname").click()
+        wd.find_element("name", "firstname").clear()
+        wd.find_element("name", "firstname").send_keys(contact.firstname)
+        wd.find_element("name", "lastname").click()
+        wd.find_element("name", "lastname").clear()
+        wd.find_element("name", "lastname").send_keys(contact.lastname)
+        wd.find_element("name", "email").click()
+        wd.find_element("name", "email").clear()
+        wd.find_element("name", "email").send_keys(contact.email)
+        # submit contact update
+        wd.find_element("name", "update").click()
+        self.return_to_contacts_page()
+
