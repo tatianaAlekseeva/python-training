@@ -12,7 +12,6 @@ def fill_contact_fields(contact, wd):
 
 
 def select_first_contact(wd):
-    # select first contact
     wd.find_element("name", "selected[]").click()
 
 
@@ -44,7 +43,7 @@ class ContactHelper:
         wd.find_element("xpath", "//input[@value='Delete']").click()
         wd.find_element("id", "maintable")
 
-    def edit_first(self, contact):
+    def modify_first(self, contact):
         self.open_contacts_page()
         wd = self.app.wd
         select_first_contact(wd)
