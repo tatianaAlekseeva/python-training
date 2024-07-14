@@ -11,6 +11,11 @@ def fill_contact_fields(contact, wd):
     wd.find_element("name", "email").send_keys(contact.email)
 
 
+def select_first_contact(wd):
+    # select first contact
+    wd.find_element("name", "selected[]").click()
+
+
 class ContactHelper:
 
     def __init__(self, app):
@@ -34,8 +39,7 @@ class ContactHelper:
     def delete_first_contact(self):
         self.open_contacts_page()
         wd = self.app.wd
-        # select first contact
-        wd.find_element("name", "selected[]").click()
+        select_first_contact(wd)
         # submit deletion
         wd.find_element("xpath", "//input[@value='Delete']").click()
         wd.find_element("id", "maintable")
@@ -43,8 +47,7 @@ class ContactHelper:
     def edit_first(self, contact):
         self.open_contacts_page()
         wd = self.app.wd
-        # select first contact
-        wd.find_element("name", "selected[]").click()
+        select_first_contact(wd)
         wd.find_element("xpath", "//img[@alt='Edit']").click()
         fill_contact_fields(contact, wd)
         # submit contact update

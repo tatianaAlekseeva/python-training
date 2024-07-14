@@ -10,6 +10,11 @@ def fill_group_fields(group, wd):
     wd.find_element("name", "group_footer").send_keys(group.footer)
 
 
+def select_first_group(wd):
+    # select first group
+    wd.find_element("name", "selected[]").click()
+
+
 class GroupHelper:
 
     def __init__(self, app):
@@ -33,8 +38,7 @@ class GroupHelper:
     def delete_first_group(self):
         wd = self.app.wd
         self.open_groups_page()
-        # select first group
-        wd.find_element("name", "selected[]").click()
+        select_first_group(wd)
         # submit deletion
         wd.find_element("name", "delete").click()
         self.return_to_groups_page()
@@ -43,11 +47,10 @@ class GroupHelper:
         wd = self.app.wd
         wd.find_element("link text", "groups").click()
 
-    def edit_first(self, group):
+    def modify_first(self, group):
         wd = self.app.wd
         self.open_groups_page()
-        # select first group
-        wd.find_element("name", "selected[]").click()
+        select_first_group(wd)
         # update group data
         wd.find_element("name", "edit").click()
         fill_group_fields(group, wd)
