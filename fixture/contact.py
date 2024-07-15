@@ -6,10 +6,11 @@ class ContactHelper:
     def open_contacts_page(self):
         wd = self.app.wd
         if not (wd.current_url.endswith("/index.php") and len(wd.find_elements("id", "maintable")) > 0):
-            wd.find_element("link text", "home page").click()
+            wd.get("http://localhost/addressbook/")
 
     def create(self, contact):
         wd = self.app.wd
+        self.open_contacts_page()
         # init contact creation
         wd.find_element("link text", "add new").click()
         # fill contact form
