@@ -45,8 +45,7 @@ class ContactHelper:
         self.open_contacts_page()
         wd = self.app.wd
         self.wait_for_main_table()
-        self.select_contact_by_index(index)
-        wd.find_element("xpath", "//img[@alt='Edit']").click()
+        wd.find_elements("xpath", "//img[@alt='Edit']")[index].click()
         self.fill_contact_fields(contact)
         # submit contact update
         wd.find_element("name", "update").click()
