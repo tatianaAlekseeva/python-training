@@ -1,3 +1,5 @@
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 from model.contact import Contact
 
 
@@ -24,24 +26,37 @@ class ContactHelper:
         self.contact_cache = None
 
     def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         self.open_contacts_page()
         wd = self.app.wd
-        self.select_first_contact()
+        self.wait_for_main_table()
+        self.select_contact_by_index(index)
         # submit deletion
         wd.find_element("xpath", "//input[@value='Delete']").click()
         wd.find_element("id", "maintable")
         self.contact_cache = None
 
     def modify_first(self, contact):
+        self.modify_contact_by_index(contact, 0)
+
+    def modify_contact_by_index(self, contact, index):
         self.open_contacts_page()
         wd = self.app.wd
-        self.select_first_contact()
+        self.wait_for_main_table()
+        self.select_contact_by_index(index)
         wd.find_element("xpath", "//img[@alt='Edit']").click()
         self.fill_contact_fields(contact)
         # submit contact update
         wd.find_element("name", "update").click()
         self.open_contacts_page()
         self.contact_cache = None
+
+    def wait_for_main_table(self):
+        wd = self.app.wd
+        wait = WebDriverWait(wd, 2)
+        wait.until(ec.presence_of_element_located(("id", "maintable")))
 
     def fill_contact_fields(self, contact):
         wd = self.app.wd
@@ -56,8 +71,11 @@ class ContactHelper:
         wd.find_element("name", "email").send_keys(contact.email)
 
     def select_first_contact(self):
+        self.select_contact_by_index(0)
+
+    def select_contact_by_index(self, index):
         wd = self.app.wd
-        wd.find_element("name", "selected[]").click()
+        wd.find_elements("name", "selected[]")[index].click()
 
     def count(self):
         wd = self.app.wd
