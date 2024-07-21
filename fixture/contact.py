@@ -35,7 +35,6 @@ class ContactHelper:
     def modify_first(self, contact):
         self.open_contacts_page()
         wd = self.app.wd
-        self.select_first_contact()
         wd.find_element("xpath", "//img[@alt='Edit']").click()
         self.fill_contact_fields(contact)
         # submit contact update
