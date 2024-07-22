@@ -45,7 +45,9 @@ class ContactHelper:
         self.open_contacts_page()
         wd = self.app.wd
         self.wait_for_main_table()
-        wd.find_elements("xpath", "//img[@alt='Edit']")[index].click()
+        id = wd.find_elements("name", "entry")[index].find_element("name", "selected[]").get_attribute("value")
+        css_selector = f'a[href="edit.php?id={id}"]'
+        wd.find_element("css selector", css_selector).click()
         self.fill_contact_fields(contact)
         # submit contact update
         wd.find_element("name", "update").click()
@@ -79,7 +81,7 @@ class ContactHelper:
     def count(self):
         wd = self.app.wd
         self.open_contacts_page()
-        return len(wd.find_elements("name", "selected[]"))
+        return len(wd.find_elements("name", "entry"))
 
     contact_cache = None
 
@@ -89,11 +91,9 @@ class ContactHelper:
             self.open_contacts_page()
             self.contact_cache = []
             for element in wd.find_elements("name", "entry"):
-                initial_string = element.find_element("name", "selected[]").get_attribute("title")
-                start = initial_string.find('(') + 1
-                end = initial_string.find(')')
-                full_name = initial_string[start:end]
-                first_name, last_name = full_name.split()
+                cells = element.find_elements("tag name", "td")
+                last_name = cells[1].text
+                first_name = cells[2].text
                 contact_id = element.find_element("name", "selected[]").get_attribute("value")
                 self.contact_cache.append(Contact(lastname=last_name, firstname=first_name, contact_id=contact_id))
         return list(self.contact_cache)
