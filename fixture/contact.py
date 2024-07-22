@@ -35,6 +35,7 @@ class ContactHelper:
     def modify_first(self, contact):
         self.open_contacts_page()
         wd = self.app.wd
+        self.select_first_contact()
         wd.find_element("xpath", "//img[@alt='Edit']").click()
         self.fill_contact_fields(contact)
         # submit contact update
@@ -71,11 +72,9 @@ class ContactHelper:
             self.open_contacts_page()
             self.contact_cache = []
             for element in wd.find_elements("name", "entry"):
-                initial_string = element.find_element("name", "selected[]").get_attribute("title")
-                start = initial_string.find('(') + 1
-                end = initial_string.find(')')
-                full_name = initial_string[start:end]
-                first_name, last_name = full_name.split()
+                cells = element.find_elements("tag name", "td")
+                last_name = cells[1].text
+                first_name = cells[2].text
                 contact_id = element.find_element("name", "selected[]").get_attribute("value")
                 self.contact_cache.append(Contact(lastname=last_name, firstname=first_name, contact_id=contact_id))
         return list(self.contact_cache)
