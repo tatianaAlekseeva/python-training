@@ -5,7 +5,7 @@ from model.contact import Contact
 
 def test_delete_any_contact(app):
     if app.contact.count() == 0:
-        app.contact.create(Contact("Maria", "Test", "test@bor.com"))
+        app.contact.create(Contact("Test", "Maria", "test@bor.com"))
     old_contacts = app.contact.get_contact_list()
     index = randrange(len(old_contacts))
     app.contact.delete_contact_by_index(index)

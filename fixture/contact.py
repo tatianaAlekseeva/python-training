@@ -1,6 +1,7 @@
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from model.contact import Contact
+import re
 
 
 class ContactHelper:
@@ -42,17 +43,19 @@ class ContactHelper:
         self.modify_contact_by_index(contact, 0)
 
     def modify_contact_by_index(self, contact, index):
-        self.open_contacts_page()
         wd = self.app.wd
-        self.wait_for_main_table()
-        id = wd.find_elements("name", "entry")[index].find_element("name", "selected[]").get_attribute("value")
-        css_selector = f'a[href="edit.php?id={id}"]'
-        wd.find_element("css selector", css_selector).click()
+        self.open_edit_form_by_index(index)
         self.fill_contact_fields(contact)
         # submit contact update
         wd.find_element("name", "update").click()
         self.open_contacts_page()
         self.contact_cache = None
+
+    def open_edit_form_by_index(self, index):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.wait_for_main_table()
+        wd.find_elements("xpath", "//img[@alt='Edit']")[index].click()
 
     def wait_for_main_table(self):
         wd = self.app.wd
@@ -61,15 +64,22 @@ class ContactHelper:
 
     def fill_contact_fields(self, contact):
         wd = self.app.wd
-        wd.find_element("name", "firstname").click()
-        wd.find_element("name", "firstname").clear()
-        wd.find_element("name", "firstname").send_keys(contact.firstname)
-        wd.find_element("name", "lastname").click()
-        wd.find_element("name", "lastname").clear()
-        wd.find_element("name", "lastname").send_keys(contact.lastname)
-        wd.find_element("name", "email").click()
-        wd.find_element("name", "email").clear()
-        wd.find_element("name", "email").send_keys(contact.email)
+        self.fill_field_by_name("firstname", contact.firstname)
+        self.fill_field_by_name("lastname", contact.lastname)
+        self.fill_field_by_name("address", contact.address)
+        self.fill_field_by_name("email", contact.email)
+        self.fill_field_by_name("email2", contact.email)
+        self.fill_field_by_name("email3", contact.email)
+        self.fill_field_by_name("home", contact.homephone)
+        self.fill_field_by_name("mobile", contact.mobilephone)
+        self.fill_field_by_name("work", contact.workphone)
+        self.fill_field_by_name("fax", contact.fax)
+
+    def fill_field_by_name(self, name, data):
+        wd = self.app.wd
+        wd.find_element("name", name).click()
+        wd.find_element("name", name).clear()
+        wd.find_element("name", name).send_keys(data)
 
     def select_first_contact(self):
         self.select_contact_by_index(0)
@@ -95,5 +105,45 @@ class ContactHelper:
                 last_name = cells[1].text
                 first_name = cells[2].text
                 contact_id = element.find_element("name", "selected[]").get_attribute("value")
-                self.contact_cache.append(Contact(lastname=last_name, firstname=first_name, contact_id=contact_id))
+                address = cells[3].text
+                all_emails = cells[4].text
+                all_phones = cells[5].text
+                self.contact_cache.append(Contact(lastname=last_name, firstname=first_name, contact_id=contact_id,
+                                                  address=address, all_emails_from_home_page=all_emails,
+                                                  all_phones_from_home_page=all_phones))
         return list(self.contact_cache)
+
+    def open_contact_view_by_index(self, index):
+        wd = self.app.wd
+        self.open_contacts_page()
+        wd.find_elements("css selector", 'img[title="Details"]')[index].click()
+
+    def get_contact_info_from_edit_page(self, index):
+        wd = self.app.wd
+        self.open_edit_form_by_index(index)
+        contact_id = wd.find_element("name", "id").get_attribute("value")
+        lastname = wd.find_element("name", "lastname").get_attribute("value")
+        firstname = wd.find_element("name", "firstname").get_attribute("value")
+        address = wd.find_element("name", "address").get_attribute("value")
+        homephone = wd.find_element("name", "home").get_attribute("value")
+        mobilephone = wd.find_element("name", "mobile").get_attribute("value")
+        workphone = wd.find_element("name", "work").get_attribute("value")
+        fax = wd.find_element("name", "fax").get_attribute("value")
+        email = wd.find_element("name", "email").get_attribute("value")
+        email2 = wd.find_element("name", "email2").get_attribute("value")
+        email3 = wd.find_element("name", "email3").get_attribute("value")
+        return Contact(contact_id=contact_id, lastname=lastname, firstname=firstname, address=address,
+                       homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax,
+                       email=email, email2=email2, email3=email3)
+
+    def get_contact_info_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_contact_view_by_index(index)
+        text = wd.find_element("id", "content").text
+        homephone = re.search("H: (.*)", text).group(1)
+        mobilephone = re.search("M: (.*)", text).group(1)
+        workphone = re.search("W: (.*)", text).group(1)
+        fax = re.search("F: (.*)", text).group(1)
+        return Contact(homephone=homephone,
+                       mobilephone=mobilephone, workphone=workphone, fax=fax)
+
