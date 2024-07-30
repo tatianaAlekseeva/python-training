@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
+import pytest
+from fixture.data_generators import *
 from model.contact import Contact
 
 
-def test_add_contact(app):
+testdata = [
+    Contact(lastname=random_name(6), firstname=random_name(12), address=random_string(10),
+            email=random_email(6, "bor.com"), email2=random_email(7, "@test"),
+            email3=random_email(10, "@kom.biz"), homephone=random_phone("+381", 7),
+            mobilephone=random_phone("+7(952)", 8), workphone=random_phone("+7-981", 4),
+            fax=random_phone("9-1-2", 8))
+    for i in range(3)
+]
+
+
+@pytest.mark.parametrize("contact", testdata, ids=[repr(x) for x in testdata])
+def test_add_contact(app, contact):
     old_contacts = app.contact.get_contact_list()
-    contact = Contact(lastname="Matjevic", firstname="Edgar", address="Serbia, Nis, Konstantina 5",
-                      email="word202@bor.com", email2="test44@test", email3="rest44@kom.biz",
-                      homephone="+381-64-66", mobilephone="87656543", workphone="+7(981)110-77",
-                      fax="5555666")
     app.contact.create(contact)
     assert len(old_contacts) + 1 == app.contact.count()
     new_contacts = app.contact.get_contact_list()
     old_contacts.append(contact)
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
-

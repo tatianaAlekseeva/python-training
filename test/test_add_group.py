@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 import pytest
-import random
-import string
+from fixture.data_generators import random_string_with_prefix
 from model.group import Group
-
-
-def random_string(prefix, maxlen):
-    symbols = string.ascii_letters + string.digits + string.punctuation + " "*10
-    return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])
 
 
 testdata = [
     Group(name=name, header=header, footer=footer)
-    for name in ["", random_string("name", 10)]
-    for header in ["", random_string("header", 15)]
-    for footer in ["", random_string("footer", 15)]
+    for name in ["", random_string_with_prefix("name", 10)]
+    for header in ["", random_string_with_prefix("header", 15)]
+    for footer in ["", random_string_with_prefix("footer", 15)]
 ]
 
 
