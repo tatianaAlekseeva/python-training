@@ -19,7 +19,7 @@ except getopt.GetoptError as err:
     usage()
     sys.exit(2)
 
-n = 5
+n = 3
 f = "data/groups.json"
 
 for o, a in opts:
