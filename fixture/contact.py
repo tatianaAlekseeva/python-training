@@ -12,7 +12,7 @@ class ContactHelper:
     def open_contacts_page(self):
         wd = self.app.wd
         if not (wd.current_url.endswith("/index.php") and len(wd.find_elements("id", "maintable")) > 0):
-            wd.get("http://localhost/addressbook/")
+            wd.get(self.app.base_url)
 
     def create(self, contact):
         wd = self.app.wd
