@@ -39,6 +39,16 @@ class ContactHelper:
         wd.find_element("id", "maintable")
         self.contact_cache = None
 
+    def delete_contact_by_id(self, contact_id):
+        self.open_contacts_page()
+        wd = self.app.wd
+        self.wait_for_main_table()
+        self.select_contact_by_id(contact_id)
+        # submit deletion
+        wd.find_element("xpath", "//input[@value='Delete']").click()
+        wd.find_element("id", "maintable")
+        self.contact_cache = None
+
     def modify_first(self, contact):
         self.modify_contact_by_index(contact, 0)
 
@@ -51,11 +61,27 @@ class ContactHelper:
         self.open_contacts_page()
         self.contact_cache = None
 
+    def modify_contact_by_id(self, contact, contact_id):
+        wd = self.app.wd
+        self.open_edit_form_by_id(contact_id)
+        self.fill_contact_fields(contact)
+        # submit contact update
+        wd.find_element("name", "update").click()
+        self.open_contacts_page()
+        self.contact_cache = None
+
     def open_edit_form_by_index(self, index):
         wd = self.app.wd
         self.open_contacts_page()
         self.wait_for_main_table()
         wd.find_elements("xpath", "//img[@alt='Edit']")[index].click()
+
+    def open_edit_form_by_id(self, contact_id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.wait_for_main_table()
+        css_selector = f'a[href="edit.php?id={contact_id}"]'
+        wd.find_element("css selector", css_selector).click()
 
     def wait_for_main_table(self):
         wd = self.app.wd
@@ -63,17 +89,23 @@ class ContactHelper:
         wait.until(ec.presence_of_element_located(("id", "maintable")))
 
     def fill_contact_fields(self, contact):
-        wd = self.app.wd
-        self.fill_field_by_name("firstname", contact.firstname)
-        self.fill_field_by_name("lastname", contact.lastname)
-        self.fill_field_by_name("address", contact.address)
-        self.fill_field_by_name("email", contact.email)
-        self.fill_field_by_name("email2", contact.email)
-        self.fill_field_by_name("email3", contact.email)
-        self.fill_field_by_name("home", contact.homephone)
-        self.fill_field_by_name("mobile", contact.mobilephone)
-        self.fill_field_by_name("work", contact.workphone)
-        self.fill_field_by_name("fax", contact.fax)
+        fields_mapping = {
+            "firstname": "firstname",
+            "lastname": "lastname",
+            "address": "address",
+            "email": "email",
+            "email2": "email2",
+            "email3": "email3",
+            "homephone": "home",
+            "mobilephone": "mobile",
+            "workphone": "work",
+            "fax": "fax"
+        }
+
+        for attr, field_name in fields_mapping.items():
+            value = getattr(contact, attr, None)
+            if value is not None:
+                self.fill_field_by_name(field_name, value)
 
     def fill_field_by_name(self, name, data):
         wd = self.app.wd
@@ -87,6 +119,10 @@ class ContactHelper:
     def select_contact_by_index(self, index):
         wd = self.app.wd
         wd.find_elements("name", "selected[]")[index].click()
+
+    def select_contact_by_id(self, contact_id):
+        wd = self.app.wd
+        wd.find_element("css selector", "input[value='%s']" % contact_id).click()
 
     def count(self):
         wd = self.app.wd
@@ -146,4 +182,3 @@ class ContactHelper:
         fax = re.search("F: (.*)", text).group(1)
         return Contact(homephone=homephone,
                        mobilephone=mobilephone, workphone=workphone, fax=fax)
-
