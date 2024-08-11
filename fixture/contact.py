@@ -1,4 +1,5 @@
 from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from model.contact import Contact
 import re
@@ -181,3 +182,20 @@ class ContactHelper:
         fax = re.search("F: (.*)", text).group(1)
         return Contact(homephone=homephone,
                        mobilephone=mobilephone, workphone=workphone, fax=fax)
+
+    def add_contact_to_group(self, contact, group):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.select_contact_by_id(contact.contact_id)
+        wd.find_element("name", "to_group").click()
+        Select(wd.find_element("name", "to_group")).select_by_visible_text(group.name)
+        wd.find_element("name", "add").click()
+        self.open_contacts_page()
+
+    def del_contact_from_group(self, contact, group):
+        wd = self.app.wd
+        self.open_contacts_page()
+        Select(wd.find_element("name", "group")).select_by_visible_text(group.name)
+        self.select_contact_by_id(contact.contact_id)
+        wd.find_element("name", "remove").click()
+        self.open_contacts_page()
