@@ -14,14 +14,15 @@ class Contact:
         self.email3 = email3
         self.contact_id = contact_id
         self.homephone = homephone
-        self. mobilephone = mobilephone
+        self.mobilephone = mobilephone
         self.workphone = workphone
         self.fax = fax
         self.all_phones_from_home_page = all_phones_from_home_page
         self.all_emails_from_home_page = all_emails_from_home_page
 
     def __repr__(self):
-        return "%s: %s %s" % (self.contact_id, self.lastname, self.firstname)
+        return (f"{self.contact_id}: {self.lastname} {self.firstname} {self.address} {self.email} "
+                f"{self.email2} {self.email3} {self.homephone} {self.mobilephone} {self.workphone} {self.fax}")
 
     def __eq__(self, other):
         return ((self.contact_id is None or other.contact_id is None or self.contact_id == other.contact_id)
