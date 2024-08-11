@@ -23,5 +23,5 @@ def random_email(maxlen, postfix):
 
 
 def random_phone(prefix, maxlen):
-    symbols = string.digits + "-" * 3
+    symbols = string.digits
     return prefix + "".join([random.choice(symbols) for i in range(random.randrange(maxlen))])

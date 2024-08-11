@@ -2,6 +2,7 @@ import pymysql.cursors
 
 from model.contact import Contact
 from model.group import Group
+from utils import merge_phones_like_on_home_page, merge_emails_like_on_home_page
 
 
 class DbFixture:
@@ -37,6 +38,13 @@ class DbFixture:
                                             fax=fax, email=email, email2=email2, email3=email3))
         finally:
             cursor.close()
+
+        for contact in contact_list:
+            phones = merge_phones_like_on_home_page(contact)
+            emails = merge_emails_like_on_home_page(contact)
+            contact.all_phones_from_home_page = phones
+            contact.all_emails_from_home_page = emails
+
         return contact_list
 
     def destroy(self):

@@ -46,7 +46,6 @@ class ContactHelper:
         self.select_contact_by_id(contact_id)
         # submit deletion
         wd.find_element("xpath", "//input[@value='Delete']").click()
-        wd.find_element("id", "maintable")
         self.contact_cache = None
 
     def modify_first(self, contact):
