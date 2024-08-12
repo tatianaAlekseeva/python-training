@@ -9,7 +9,8 @@ def test_add_contact_to_group(app, db, orm):
     if len(db.get_contact_list()) == 0:
         app.contact.create(Contact("Test", "Maria", "test@bor.com"))
     group = random_non_empty_unique_group(app, db)
-    contact = random.choice(db.get_contact_list())
+    contacts_not_in_group = orm.get_contacts_not_in_group(group)
+    contact = random.choice(contacts_not_in_group)
     app.contact.add_contact_to_group(contact, group)
     contacts_in_group = orm.get_contacts_in_group(group)
     assert contact in contacts_in_group
