@@ -7,7 +7,9 @@ def test_add_contact_to_group(app, db, orm):
     if len(db.get_group_list()) == 0:
         add_group(app)
     group = random_non_empty_unique_group(app, db)
-    if len(db.get_contact_list()) == 0 or len(orm.get_contacts_not_in_group(group)) == 0:
+    if len(db.get_contact_list()) == 0:
+        create_contract(app)
+    if len(orm.get_contacts_not_in_group(group)) == 0:
         create_contract(app)
     contacts_not_in_group = orm.get_contacts_not_in_group(group)
     contact = random.choice(contacts_not_in_group)
@@ -36,7 +38,7 @@ def test_del_contact_from_group(app, db, orm):
 
 
 def create_contract(app):
-    return app.contact.create(Contact("Test22", "Maria", "test@bor.com"))
+    return app.contact.create(Contact("Testovic", "Maria", "test@bor.com"))
 
 
 def add_group(app):
