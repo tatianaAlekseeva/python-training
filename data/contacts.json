@@ -1,0 +1,50 @@
+[
+  {
+    "py/object": "model.contact.Contact",
+    "firstname": "Ls",
+    "lastname": "Dehstz",
+    "address": "xqb3c9/Y",
+    "email": "qfwbor.com",
+    "email2": "y5@test",
+    "email3": "pufet0k@kom.biz",
+    "contact_id": null,
+    "homephone": "+38111",
+    "mobilephone": "+7(952)054",
+    "workphone": "+7-9816",
+    "fax": "9-1-24",
+    "all_phones_from_home_page": null,
+    "all_emails_from_home_page": null
+  },
+  {
+    "py/object": "model.contact.Contact",
+    "firstname": "Vaskwlrwy",
+    "lastname": "Hztbn",
+    "address": "/ ",
+    "email": "i2bor.com",
+    "email2": "4fsx@test",
+    "email3": "va61c@kom.biz",
+    "contact_id": null,
+    "homephone": "+381332399",
+    "mobilephone": "+7(952)",
+    "workphone": "+7-981",
+    "fax": "9-1-24",
+    "all_phones_from_home_page": null,
+    "all_emails_from_home_page": null
+  },
+  {
+    "py/object": "model.contact.Contact",
+    "firstname": "Famcts",
+    "lastname": "Hittv",
+    "address": "{",
+    "email": "da8bor.com",
+    "email2": "-v@test",
+    "email3": "kpt@kom.biz",
+    "contact_id": null,
+    "homephone": "+381986",
+    "mobilephone": "+7(952)98",
+    "workphone": "+7-981",
+    "fax": "9-1-24",
+    "all_phones_from_home_page": null,
+    "all_emails_from_home_page": null
+  }
+]
